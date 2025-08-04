@@ -1,0 +1,22 @@
+name: Deploy to Dokku
+
+on:
+  push:
+    branches:
+      - main  # or use 'master' if that's your branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Dokku
+        uses: dokku/github-action@v1
+        with:
+          dokku-host: yourdomain.com
+          ssh-private-key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
+          app-name: browserless
+          git-branch: main
