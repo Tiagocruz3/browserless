@@ -2,12 +2,27 @@ version: '3.8'
 
 services:
   browserless:
-    image: browserless/chrome
+    image: browserless/chrome:latest
+    container_name: browserless
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3100:3000"  # External port 3100 → Internal port 3000 (Browserless default)
     environment:
+      # Authentication (optional)
+      - TOKEN=your-secret-token
+
+      # Performance tuning (optional)
       - MAX_CONCURRENT_SESSIONS=10
       - CONNECTION_TIMEOUT=300000
       - ENABLE_DEBUGGER=true
-      - TOKEN=your-secret-token
+
+      # Logging (optional)
+      - DEBUGGER=false
+      - PREBOOT_CHROME=true
+      - KEEP_ALIVE=true
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
